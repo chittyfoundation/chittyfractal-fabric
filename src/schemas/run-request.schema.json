@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "chittyschema://scopes/agent/run-request.schema.json",
+  "title": "ChittyFractal Run Request",
+  "description": "Workflow entry envelope for POST /api/v1/runs. Canonical version lives in chittyschema; this local copy is for offline validation only.",
+  "type": "object",
+  "required": [
+    "entry_id", "tenant_id", "requested_by", "root_scope_type",
+    "objective", "artifact_refs", "schema_contract_uri",
+    "policy_profile", "loop_budget", "evaluator_profile", "output_targets"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "entry_id":   { "type": "string", "minLength": 1, "pattern": "^run_" },
+    "tenant_id":  { "type": "string", "minLength": 1 },
+    "requested_by": { "type": "string", "minLength": 1 },
+    "root_scope_type": {
+      "type": "string",
+      "enum": [
+        "legal.document_extraction",
+        "legal.litigation.case",
+        "corporate_governance.document",
+        "agent.system_improvement"
+      ]
+    },
+    "objective": { "type": "string", "minLength": 1 },
+    "schema_contract_uri": { "type": "string", "pattern": "^chittyschema://" },
+    "policy_profile": {
+      "type": "string",
+      "enum": ["cheap", "balanced", "court_grade", "research"]
+    },
+    "artifact_refs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["storage_type", "storage_ref"],
+        "properties": {
+          "storage_type": { "type": "string", "enum": ["r2","url","drive","manual","email"] },
+          "storage_ref":  { "type": "string", "minLength": 1 },
+          "content_hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "mime_type":    { "type": "string" },
+          "filename":     { "type": "string" },
+          "page_range":   { "type": "string" }
+        }
+      }
+    },
+    "loop_budget": {
+      "type": "object",
+      "required": ["max_rounds"],
+      "properties": {
+        "max_rounds":            { "type": "integer", "minimum": 1, "maximum": 50 },
+        "max_cost_usd":          { "type": "number", "minimum": 0 },
+        "max_wall_time_seconds": { "type": "integer", "minimum": 1 },
+        "stop_score":            { "type": "number", "minimum": 0, "maximum": 1 },
+        "require_human_at_round":{ "type": "integer", "minimum": 1 }
+      }
+    },
+    "evaluator_profile": {
+      "type": "object",
+      "required": ["internal", "require_disagreement_review"],
+      "properties": {
+        "internal":     { "type": "boolean" },
+        "third_party":  { "type": "string", "enum": ["openai","anthropic","mistral","gemini","custom"] },
+        "require_disagreement_review": { "type": "boolean" },
+        "minimum_score": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "output_targets": {
+      "type": "object",
+      "required": ["write_scope_events","write_evidence","ledger_candidate","telemetry"],
+      "properties": {
+        "write_scope_events": { "type": "boolean" },
+        "write_evidence":     { "type": "boolean" },
+        "ledger_candidate":   { "type": "boolean" },
+        "telemetry":          { "type": "boolean" }
+      }
+    }
+  }
+}

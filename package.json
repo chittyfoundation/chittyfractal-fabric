@@ -1,0 +1,32 @@
+{
+  "name": "@chittyfoundation/chittyfractal-fabric",
+  "version": "0.1.0",
+  "description": "Cloudflare-native orchestration substrate for ChittyOS fractal-scope agent workflows",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail --format pretty",
+    "types": "wrangler types",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:replay": "vitest run --dir tests/replay",
+    "validate:schemas": "tsx scripts/validate-schemas.ts",
+    "validate:bindings": "tsx scripts/validate-bindings.ts"
+  },
+  "dependencies": {
+    "@cloudflare/workers-types": "^4.20260512.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0",
+    "wrangler": "^4.0.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

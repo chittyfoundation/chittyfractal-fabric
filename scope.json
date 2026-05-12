@@ -1,0 +1,34 @@
+{
+  "service": "chittyfractal-fabric",
+  "canonical_uri": "chittycanon://tech/services/chittyfractal-fabric",
+  "tier": 4,
+  "organization": "CHITTYFOUNDATION",
+  "depends_on": [
+    "chittycanon://core/services/chittyschema",
+    "chittycanon://core/services/chittycanon",
+    "chittycanon://core/services/chittyentity",
+    "chittycanon://core/services/chittyevidence",
+    "chittycanon://core/services/chittyledger",
+    "chittycanon://core/services/chittymint",
+    "chittycanon://core/services/chittytrack",
+    "chittycanon://core/services/chittyregister"
+  ],
+  "owns_scope_types": [
+    "agent.workflow",
+    "agent.loop",
+    "agent.loop.ocr",
+    "agent.loop.extraction",
+    "agent.loop.verification",
+    "agent.loop.evaluation",
+    "agent.loop.alchemy",
+    "agent.replay",
+    "agent.evaluation",
+    "agent.improvement.proposal",
+    "agent.policy.decision"
+  ],
+  "consumes_scope_types": [
+    "legal.document_extraction",
+    "legal.litigation.*",
+    "corporate_governance.*"
+  ]
+}

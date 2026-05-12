@@ -1,0 +1,103 @@
+{
+  // ChittyFractal Fabric — orchestration substrate
+  // canonical: chittycanon://tech/services/chittyfractal-fabric
+  // @canon: chittycanon://core/services/chittytrack (observability)
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "chittyfractal-fabric",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-05-12",
+  "compatibility_flags": ["nodejs_compat"],
+  "account_id": "0bc21e3a5a9de1a4cc843be9c3e98121", // ChittyCorp LLC
+  "workers_dev": false,
+  "preview_urls": false,
+
+  "routes": [
+    { "pattern": "chittyfractal-fabric.chitty.cc/*", "zone_name": "chitty.cc" }
+  ],
+
+  "placement": { "mode": "smart" },
+
+  // ─── Canonical observability — OTLP to chittytrack ────────────────────────
+  // Destinations chittytrack-logs / chittytrack-traces must be pre-registered
+  // in the CF dashboard pointing at track.chitty.cc/v1/{logs,traces}.
+  "observability": {
+    "enabled": true,
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "invocation_logs": true,
+      "destinations": ["chittytrack-logs"]
+    },
+    "traces": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "destinations": ["chittytrack-traces"],
+      "persist": false
+    }
+  },
+
+  // belt-and-suspenders during early rollout
+  "tail_consumers": [
+    { "service": "chittytrack" }
+  ],
+
+  // ─── Durable Object named agents (Milestone 3+) ──────────────────────────
+  "durable_objects": {
+    "bindings": []
+    // Will add as agents land:
+    // { "name": "ROUTER_AGENT", "class_name": "RouterAgent" },
+    // { "name": "SCHEMA_AGENT", "class_name": "SchemaAgent" },
+    // { "name": "EXTRACTOR_AGENT", "class_name": "ExtractorAgent" },
+    // ...
+  },
+
+  // ─── Workflows (Milestone 2+) ────────────────────────────────────────────
+  "workflows": [
+    // { "name": "FRACTAL_RUN_WORKFLOW", "class_name": "FractalRunWorkflow",
+    //   "binding": "FRACTAL_RUN_WORKFLOW" }
+  ],
+
+  // ─── Hyperdrive: scope persistence (Milestone 1+) ────────────────────────
+  // CHITTYOS_CORE_DB is required — scope projection target.
+  // CHITTYEVIDENCE_DB / CHITTYLEDGER_DB are optional per write policy §7.3.
+  "hyperdrive": [
+    // { "binding": "CHITTYOS_CORE_DB", "id": "<hyperdrive-id-needed>" }
+  ],
+
+  // ─── R2: artifacts + telemetry lake ──────────────────────────────────────
+  "r2_buckets": [
+    // { "binding": "ARTIFACTS", "bucket_name": "chittyfractal-artifacts" },
+    // { "binding": "TELEMETRY_LAKE", "bucket_name": "chittyfractal-telemetry" }
+  ],
+
+  // ─── AI binding ──────────────────────────────────────────────────────────
+  "ai": { "binding": "AI" },
+
+  // ─── Queues (Milestone 5+) ───────────────────────────────────────────────
+  "queues": {
+    "producers": [
+      // { "binding": "AGENT_TASK_QUEUE", "queue": "agent-task-queue" },
+      // { "binding": "AGENT_EVAL_QUEUE", "queue": "agent-eval-queue" },
+      // { "binding": "AGENT_REPLAY_QUEUE", "queue": "agent-replay-queue" },
+      // { "binding": "AGENT_ALCHEMY_QUEUE", "queue": "agent-alchemy-queue" }
+    ],
+    "consumers": [
+      // { "queue": "agent-task-queue", "max_batch_size": 10,
+      //   "dead_letter_queue": "agent-dlq" }
+    ]
+  },
+
+  // ─── Service bindings (cross-service calls) ──────────────────────────────
+  "services": [
+    // { "binding": "CHITTYSCHEMA", "service": "chittyschema" },
+    // { "binding": "CHITTYMINT", "service": "chittymint" }
+  ],
+
+  "vars": {
+    "SERVICE_NAME": "chittyfractal-fabric",
+    "SERVICE_VERSION": "0.1.0",
+    "SERVICE_ORIGIN": "chittyfractal-fabric.chitty.cc",
+    "DEFAULT_POLICY_PROFILE": "balanced",
+    "CHITTYCANON_URI": "chittycanon://tech/services/chittyfractal-fabric"
+  }
+}
